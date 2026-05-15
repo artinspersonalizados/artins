@@ -3,658 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Gestor Pro v10.2 - Armazenamento Local</title>
+    <title>Sistema Gestor Pro v10.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
             body { background: white; padding: 0; margin: 0; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            #aba-gerar-pedido { padding: 0 !important; background: white !important; }
-            #documento-impressao { 
-                border: none !important; 
-                box-shadow: none !important; 
-                padding: 0 !important; 
-                margin: 0 !important;
-                width: 100% !important;
-                max-width: 100% !important;
-            }
+            #documento-impressao { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <div id="tela-login" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-sm w-full border border-gray-200">
-            <div class="text-center mb-6">
-                <div class="bg-black text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black mx-auto mb-2">G</div>
-                <h2 class="text-xl font-bold text-gray-900">Gestor Pro Local</h2>
-                <p class="text-xs text-gray-500 mt-1">Insira a senha de acesso para liberar o sistema</p>
-            </div>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-gray-600 mb-1">Senha do Sistema</label>
-                    <input type="password" id="senhaAcesso" placeholder="Senha******" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:outline-black">
-                </div>
-                <button onclick="verificarSenha()" class="w-full bg-black text-white p-2.5 rounded-lg font-bold text-sm hover:bg-gray-800 transition pt-3">Acessar Meu Painel</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="conteudo-sistema" class="hidden max-w-5xl mx-auto my-4 md:my-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 no-print">
+    <div id="conteudo-sistema" class="max-w-5xl mx-auto my-4 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
         
-        <div class="bg-black p-4 px-6 text-white flex flex-wrap justify-between items-center gap-2">
-            <div>
-                <h1 class="text-lg font-bold tracking-wide">SISTEMA GESTOR DE ORÇAMENTOS</h1>
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Modo Offline: Dados Salvos neste Computador</p>
-            </div>
-            <button onclick="bloquearSistema()" class="text-xs font-bold text-gray-400 hover:text-white transition">Bloquear Painel 🔒</button>
-        </div>
-
-        <div class="bg-gray-50 p-2 flex flex-wrap gap-1.5 justify-center border-b border-gray-200">
-            <button onclick="mudarAba('aba-materiais')" id="btn-aba-materiais" class="aba-btn bg-black text-white px-3 py-2 rounded-lg font-medium text-xs transition">1. Papéis</button>
-            <button onclick="mudarAba('aba-produtos-base')" id="btn-aba-produtos-base" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-xs transition">2. Bases</button>
-            <button onclick="mudarAba('aba-embalagens')" id="btn-aba-embalagens" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-xs transition">3. Embalagens</button>
-            <button onclick="mudarAba('aba-maquinas')" id="btn-aba-maquinas" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium text-xs transition">4. Máquinas</button>
-            <button onclick="mudarAba('aba-orcamento')" id="btn-aba-orcamento" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-bold text-xs transition border border-black text-black">🛠️ 5. Montar Produto</button>
-            <button onclick="mudarAba('aba-catalogo-vazia')" id="btn-aba-catalogo-vazia" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-bold text-xs transition border border-gray-400">🛍️ 6. Meu Catálogo</button>
-            <button onclick="mudarAba('aba-gerar-pedido')" id="btn-aba-gerar-pedido" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-bold text-xs transition border border-gray-400">📋 7. Tela do Orçamento</button>
-            <button onclick="mudarAba('aba-historico')" id="btn-aba-historico" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-bold text-xs transition border border-gray-400">📁 8. Histórico</button>
+        <div class="bg-gray-50 p-2 flex flex-wrap gap-1.5 justify-center border-b border-gray-200 no-print">
+            <button onclick="mudarAba('aba-materiais')" class="aba-btn bg-black text-white px-3 py-2 rounded-lg text-xs">1. Papéis</button>
+            <button onclick="mudarAba('aba-orcamento')" class="aba-btn bg-gray-200 px-3 py-2 rounded-lg text-xs">5. Montar</button>
+            <button onclick="mudarAba('aba-gerar-pedido')" class="aba-btn bg-gray-200 px-3 py-2 rounded-lg text-xs font-bold">📋 7. Orçamento/Sincronizar</button>
         </div>
 
         <div class="p-6">
-            <div id="aba-materiais" class="aba-conteudo">
-                <h2 class="text-sm font-bold text-gray-900 mb-2 border-b pb-1 uppercase">Cadastro de Papéis e Insumos</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border border-gray-200">
-                    <input type="text" id="matNome" placeholder="Ex: Papel Fotográfico A4" class="p-2 border border-gray-300 rounded text-sm focus:outline-black">
-                    <input type="number" id="matPreco" placeholder="Preço do Pacote (R$)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" step="0.01">
-                    <input type="number" id="matQtd" placeholder="Qtd de folhas" class="p-2 border border-gray-300 rounded text-sm focus:outline-black">
-                    <input type="number" id="matPerda" placeholder="Margem de Perda (%)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="5">
-                    <button onclick="adicionarMaterial()" class="md:col-span-4 bg-black text-white p-2 rounded-lg font-medium hover:bg-gray-800 text-sm transition">Salvar Material</button>
-                </div>
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead><tr class="bg-gray-100 border-b"><th class="p-2 text-gray-600">Item</th><th class="p-2 text-black font-bold">Custo + Perda</th><th class="p-2 text-gray-600">Ação</th></tr></thead>
-                    <tbody id="tabelaMateriais"></tbody>
-                </table>
-            </div>
-
-            <div id="aba-produtos-base" class="aba-conteudo hidden">
-                <h2 class="text-sm font-bold text-gray-900 mb-2 border-b pb-1 uppercase">Produtos Base (Itens Lisos)</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border border-gray-200">
-                    <input type="text" id="baseNome" placeholder="Ex: Caneca de Cerâmica" class="p-2 border border-gray-300 rounded text-sm focus:outline-black">
-                    <input type="number" id="basePreco" placeholder="Preço Unitário (R$)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" step="0.01">
-                    <input type="number" id="basePerda" placeholder="Margem de Perda (%)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="5">
-                    <button onclick="adicionarProdutoBase()" class="md:col-span-3 bg-black text-white p-2 rounded-lg font-medium hover:bg-gray-800 text-sm transition">Salvar Produto Base</button>
-                </div>
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead><tr class="bg-gray-100 border-b"><th class="p-2 text-gray-600">Produto</th><th class="p-2 text-black font-bold">Custo + Perda</th><th class="p-2 text-gray-600">Ação</th></tr></thead>
-                    <tbody id="tabelaProdutosBase"></tbody>
-                </table>
-            </div>
-
-            <div id="aba-embalagens" class="aba-conteudo hidden">
-                <h2 class="text-sm font-bold text-gray-900 mb-2 border-b pb-1 uppercase">Cadastro de Embalagens</h2>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border border-gray-200">
-                    <input type="text" id="embNome" placeholder="Ex: Caixa Kraft" class="p-2 border border-gray-300 rounded text-sm focus:outline-black">
-                    <input type="number" id="embPreco" placeholder="Preço do Lote (R$)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" step="0.01">
-                    <input type="number" id="embQtd" placeholder="Qtd no lote" class="p-2 border border-gray-300 rounded text-sm focus:outline-black">
-                    <input type="number" id="embPerda" placeholder="Margem de Perda (%)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="2">
-                    <button onclick="adicionarEmbalagem()" class="md:col-span-4 bg-black text-white p-2 rounded-lg font-medium hover:bg-gray-800 text-sm transition">Salvar Embalagem</button>
-                </div>
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead><tr class="bg-gray-100 border-b"><th class="p-2 text-gray-600">Embalagem</th><th class="p-2 text-black font-bold">Custo Unitário</th><th class="p-2 text-gray-600">Ação</th></tr></thead>
-                    <tbody id="tabelaEmbalagens"></tbody>
-                </table>
-            </div>
-
-            <div id="aba-maquinas" class="aba-conteudo hidden">
-                <h2 class="text-sm font-bold text-gray-900 mb-1 border-b pb-1 uppercase">Custos de Máquinas</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border border-gray-200">
-                    <input type="text" id="maqNome" placeholder="Ex: Prensa" class="p-2 border border-gray-300 rounded text-sm md:col-span-2 focus:outline-black">
-                    <input type="number" id="maqTinta" placeholder="Custo de Tinta" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="0.00" step="0.01">
-                    <input type="number" id="maqEnergia" placeholder="Custo de Energia" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="0.00" step="0.01">
-                    <input type="number" id="maqManutencao" placeholder="Custo Manutenção" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="0.00" step="0.01">
-                    <input type="number" id="maqLamina" placeholder="Custo de Lâmina" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="0.00" step="0.01">
-                    <input type="number" id="maqAquecimento" placeholder="Custo Tempo/Aquec." class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="0.00" step="0.01">
-                    <input type="number" id="maqPerda" placeholder="Margem de Perda (%)" class="p-2 border border-gray-300 rounded text-sm focus:outline-black" value="5">
-                    <button onclick="adicionarMaquina()" class="md:col-span-2 bg-black text-white p-2 rounded-lg font-medium hover:bg-gray-800 text-sm transition">Salvar Configuração</button>
-                </div>
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead><tr class="bg-gray-100 border-b"><th class="p-2 text-gray-600">Máquina</th><th class="p-2 text-black font-bold">Custo Final</th><th class="p-2 text-gray-600">Ação</th></tr></thead>
-                    <tbody id="tabelaMaquinas"></tbody>
-                </table>
-            </div>
-
-            <div id="aba-orcamento" class="aba-conteudo hidden">
-                <div class="space-y-4">
-                    <div class="bg-gray-900 text-white p-4 rounded-xl space-y-3">
-                        <div>
-                            <label class="block text-xs font-bold uppercase tracking-wider mb-1 text-gray-300">Nome do produto que está montando:</label>
-                            <input type="text" id="nomeProdutoCalculado" value="Caneca Personalizada" class="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded text-sm font-bold focus:outline-none">
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[11px] font-bold uppercase text-gray-400 mb-0.5">Descrição Curta do Produto:</label>
-                                <input type="text" id="descProdutoCalculado" placeholder="Ex: Porcelana AAA 325ml" class="w-full p-2 bg-gray-800 text-white border border-gray-700 rounded text-xs focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold uppercase text-gray-400 mb-0.5">Foto do Produto (Opcional):</label>
-                                <input type="file" id="fotoProdutoCalculado" accept="image/*" class="w-full text-xs text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-700 file:text-white hover:file:bg-gray-600">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <div><label class="block text-[11px] text-gray-500">Salário/Mês</label><input type="number" id="salario" value="2000" oninput="calcularTudo()" class="w-full p-1.5 border rounded text-xs"></div>
-                        <div><label class="block text-[11px] text-gray-500">Horas/Mês</label><input type="number" id="horasMes" value="160" oninput="calcularTudo()" class="w-full p-1.5 border rounded text-xs"></div>
-                        <div><label class="block text-[11px] text-gray-500">Tempo Prod. (Min)</label><input type="number" id="tempoItem" value="15" oninput="calcularTudo()" class="w-full p-1.5 border rounded text-xs"></div>
-                        <div><label class="block text-[11px] text-gray-500">Lucro (%)</label><input type="number" id="margemLucro" value="100" oninput="calcularTudo()" class="w-full p-1.5 border rounded text-xs"></div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-xl p-3 bg-white space-y-3">
-                        <h3 class="text-xs font-bold text-gray-700 uppercase border-b pb-1">Vincular Componentes</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
-                            <div class="p-2 bg-gray-50 rounded border flex items-center justify-between gap-1">
-                                <select id="selectMat" class="p-1 border rounded w-1/2 bg-white text-[11px]"></select>
-                                <input type="number" id="usoRendimento" value="1" title="Rendimento" class="w-10 p-1 border rounded text-center">
-                                <input type="number" id="usoFracao" value="1" title="Fração" step="0.1" class="w-10 p-1 border rounded text-center">
-                                <button onclick="adicionarComponente('mat')" class="bg-black text-white px-2 py-1 rounded text-[11px] font-bold">+</button>
-                            </div>
-                            <div class="p-2 bg-gray-50 rounded border flex items-center justify-between gap-2">
-                                <select id="selectBase" class="p-1 border rounded flex-1 bg-white text-[11px]"></select>
-                                <button onclick="adicionarComponente('base')" class="bg-black text-white px-2 py-1 rounded text-[11px] font-bold">+</button>
-                            </div>
-                            <div class="p-2 bg-gray-50 rounded border flex items-center justify-between gap-2">
-                                <select id="selectEmb" class="p-1 border rounded flex-1 bg-white text-[11px]"></select>
-                                <button onclick="adicionarComponente('emb')" class="bg-black text-white px-2 py-1 rounded text-[11px] font-bold">+</button>
-                            </div>
-                            <div class="p-2 bg-gray-50 rounded border flex items-center justify-between gap-2">
-                                <select id="selectMaq" class="p-1 border rounded flex-1 bg-white text-[11px]"></select>
-                                <button onclick="adicionarComponente('maq')" class="bg-black text-white px-2 py-1 rounded text-[11px] font-bold">+</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <table class="w-full text-left border-collapse text-xs bg-white border border-gray-200"><tbody id="tabelaOrcamentoAtual"></tbody></table>
-
-                    <div class="bg-gray-50 border-2 border-black p-4 rounded-xl text-center space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                            <div class="p-2 bg-white rounded-lg border">
-                                <span class="text-[10px] uppercase font-bold text-gray-500 block">Preço Sugerido (Base de cálculo)</span>
-                                <span id="resPrecoVenda" class="text-lg font-bold text-gray-400">R$ 0,00</span>
-                            </div>
-                            <div class="p-2 bg-black rounded-lg border border-black shadow-lg">
-                                <span class="text-[10px] uppercase font-bold text-gray-300 block">Preço Final de Venda (Ajustável)</span>
-                                <div class="flex items-center justify-center gap-1">
-                                    <span class="text-white font-bold text-xl">R$</span>
-                                    <input type="number" id="precoFinalAjustavel" step="0.01" class="bg-transparent text-white text-xl font-black w-32 text-center focus:outline-none" value="0.00">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-wrap gap-2 justify-center pt-2">
-                            <button onclick="processarFichaParaSalvar()" class="bg-black text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-gray-800 transition">💾 Salvar no Catálogo</button>
-                            <button onclick="jogarProdutoNoPedido()" class="bg-green-700 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-green-800 transition">🛒 Jogar no Orçamento</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="aba-catalogo-vazia" class="aba-conteudo hidden">
-                <div class="flex items-center justify-between border-b pb-2 mb-4">
-                    <h2 class="text-sm font-bold text-gray-900 uppercase">🛍️ Meus Produtos Salvos</h2>
-                    <span id="contadorCatalogo" class="bg-black text-white px-2 py-0.5 rounded text-xs font-bold">0</span>
-                </div>
-                <div id="listaCatalogoProdutos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-            </div>
-
             <div id="aba-gerar-pedido" class="aba-conteudo hidden">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl mb-6 border border-gray-200 no-print">
-                    <div>
-                        <h3 class="text-xs font-bold text-black uppercase mb-2 border-b border-gray-300 flex justify-between">
-                            <span>⚙️ Seus Dados Fixos (Salva Automático)</span>
-                        </h3>
-                        <div class="space-y-2">
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-gray-500">Nome da Empresa</label>
-                                <input type="text" id="empresaNome" placeholder="Minha Gráfica & Personalizados" class="w-full p-1.5 border rounded text-xs focus:outline-black" oninput="salvarConfiguracoesEmpresa()">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-gray-500">Telefone / Contato</label>
-                                <input type="text" id="empresaContato" placeholder="(11) 99999-9999" class="w-full p-1.5 border rounded text-xs focus:outline-black" oninput="salvarConfiguracoesEmpresa()">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-gray-500">Sua Logomarca</label>
-                                <input type="file" id="empresaLogoFile" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[11px] file:font-semibold file:bg-black file:text-white hover:file:bg-gray-800" onchange="uploadLogoEmpresa()">
-                                <div id="previewLogoTela" class="mt-2 hidden"><img id="imgPreviewLogo" src="" class="h-10 object-contain border rounded p-0.5 bg-white"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h3 class="text-xs font-bold text-gray-700 uppercase mb-2 border-b border-gray-300">👤 Dados do Cliente (Muda a cada pedido)</h3>
-                        <div class="space-y-2">
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-gray-500">Nome do Cliente</label>
-                                <input type="text" id="clienteNome" placeholder="Nome do Cliente" class="w-full p-1.5 border rounded text-xs focus:outline-black">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-gray-500">WhatsApp do Cliente (Apenas Números)</label>
-                                <input type="text" id="clienteContato" placeholder="11999999999" class="w-full p-1.5 border rounded text-xs focus:outline-black">
-                            </div>
+                <div class="bg-blue-50 p-4 rounded-xl mb-6 border border-blue-200 no-print">
+                    <h3 class="text-xs font-bold text-blue-800 uppercase mb-2">🔄 Sincronizar PC e Celular</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="exportarDados()" class="bg-blue-600 text-white text-[10px] font-bold p-2 rounded-lg">📤 Exportar Backup do PC</button>
+                        <div class="relative">
+                            <input type="file" id="inputImport" class="hidden" onchange="importarDados(event)">
+                            <button onclick="document.getElementById('inputImport').click()" class="w-full bg-green-600 text-white text-[10px] font-bold p-2 rounded-lg">📥 Importar no Celular</button>
                         </div>
                     </div>
                 </div>
 
-                <div id="alertaEdicao" class="hidden bg-amber-100 border border-amber-400 text-amber-800 text-xs p-3 rounded-xl mb-4 flex justify-between items-center no-print">
-                    <span>⚠️ Editando orçamento já salvo.</span><button onclick="cancelarEdicao()" class="underline font-bold">Cancelar</button>
-                </div>
-
-                <div class="bg-white p-4 rounded-xl border border-gray-200 mb-4 no-print">
-                    <h3 class="text-xs font-bold text-gray-700 uppercase mb-2 border-b">Itens Incluídos no Orçamento Atual</h3>
-                    <table class="w-full text-left text-xs">
-                        <thead><tr class="bg-gray-100 border-b"><th class="p-2">Item</th><th class="p-2 text-center">Qtd</th><th class="p-2 text-right">Unitário</th><th class="p-2 text-right">Total</th><th class="p-2 text-center">Remover</th></tr></thead>
-                        <tbody id="tabelaItensTelaOrcamento"></tbody>
-                    </table>
-                </div>
-
-                <div class="mt-4 flex flex-wrap gap-3 justify-end no-print mb-4">
-                    <button onclick="enviarWhatsApp()" class="bg-green-600 text-white font-bold px-6 py-2 rounded-xl text-xs shadow hover:bg-green-700 transition flex items-center gap-2">
-                        <span>📲 Enviar para o WhatsApp</span>
-                    </button>
-                    <button onclick="salvarOrcamentoNoBanco()" class="bg-blue-700 text-white font-bold px-6 py-2 rounded-xl text-xs shadow hover:bg-blue-800 transition">💾 Gravar no Histórico</button>
-                    <button onclick="window.print()" class="bg-black text-white font-bold px-6 py-2 rounded-xl text-xs shadow hover:bg-gray-800 transition">🖨️ Gerar PDF / Imprimir</button>
-                </div>
+                <input type="text" id="clienteNome" placeholder="Nome do Cliente" class="w-full p-2 border mb-2 rounded text-sm">
+                <input type="text" id="clienteContato" placeholder="WhatsApp do Cliente" class="w-full p-2 border mb-2 rounded text-sm">
+                
+                <button onclick="enviarWhatsApp()" class="w-full bg-green-600 text-white font-bold p-4 rounded-xl mt-4">📲 ENVIAR PARA WHATSAPP</button>
             </div>
-
-            <div id="aba-historico" class="aba-conteudo hidden">
-                <h2 class="text-sm font-bold text-gray-900 mb-4 border-b pb-1 uppercase">📂 Orçamentos Salvos Localmente</h2>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-xs bg-white border border-gray-200 rounded-xl overflow-hidden">
-                        <thead><tr class="bg-gray-900 text-white uppercase text-[10px]"><th class="p-3">Data</th><th class="p-3">Cliente</th><th class="p-3">Contato</th><th class="p-3 text-right">Total</th><th class="p-3 text-center">Ações</th></tr></thead>
-                        <tbody id="listaHistoricoOrcamentos"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="documento-impressao" class="hidden print:block bg-white p-10 max-w-[210mm] mx-auto text-gray-900 text-sm">
-        <div class="h-2 bg-black mb-8"></div>
-        <div class="flex justify-between items-center border-b border-gray-300 pb-6 mb-8 gap-4">
-            <div class="flex items-center gap-4">
-                <div id="wrapperLogoPrint" class="hidden"><img id="printEmpresaLogo" src="" class="max-h-16 max-w-[150px] object-contain"></div>
-                <div>
-                    <h2 id="printEmpresaNome" class="text-xl font-black text-black uppercase tracking-tight">Minha Gráfica</h2>
-                    <p id="printEmpresaContato" class="text-xs text-gray-600 mt-0.5 font-medium">Contato: --</p>
-                </div>
-            </div>
-            <div class="text-right bg-gray-100 p-4 rounded-lg border border-gray-200 min-w-[180px]">
-                <h3 class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Documento de</h3>
-                <h4 class="text-lg font-black text-black tracking-wide">ORÇAMENTO</h4>
-                <p class="text-xs text-gray-600 mt-1">Emissão: <span id="dataOrcamento" class="font-bold">--/--/----</span></p>
-            </div>
-        </div>
-        <div class="mb-8">
-            <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Destinatário / Cliente</h5>
-            <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <div><span class="text-[11px] text-gray-500 block uppercase font-bold">Nome do Cliente:</span><span id="printClienteNome" class="text-sm font-bold text-gray-800">Não informado</span></div>
-                <div><span class="text-[11px] text-gray-500 block uppercase font-bold">Contato / WhatsApp:</span><span id="printClienteContato" class="text-sm font-bold text-gray-800">Não informado</span></div>
-            </div>
-        </div>
-        <div class="mb-8">
-            <h5 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Itens Solicitados</h5>
-            <table class="w-full text-left border-collapse">
-                <thead><tr class="border-b-2 border-black text-xs font-bold uppercase text-gray-700 bg-gray-50"><th class="p-3 pl-1">Descrição</th><th class="p-3 text-center w-20">Qtd</th><th class="p-3 text-right w-32">Unitário</th><th class="p-3 text-right w-32 pr-1">Total</th></tr></thead>
-                <tbody id="tabelaItensDoPedido" class="divide-y divide-gray-200"></tbody>
-            </table>
-        </div>
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 items-center border-t border-gray-300 pt-6">
-            <div class="md:col-span-2 text-xs text-gray-500 space-y-1"><p>• Validade: 15 dias.</p><p>• Prazo inicia após aprovação da arte.</p></div>
-            <div class="bg-black text-white p-4 rounded-xl text-right shadow-md"><span class="text-[10px] uppercase font-bold text-gray-400 block mb-1">Total do Pedido</span><span id="printValorTotalPedido" class="text-xl font-black">R$ 0,00</span></div>
         </div>
     </div>
 
     <script>
-        const SENHA_CORRETA = "270217"; 
-        let materiais = []; let produtosBase = []; let embalagens = []; let maquinas = [];
-        let orcamentoAtual = []; let pedidoCliente = [];
-        let orcamentosSalvos = []; let catalogoProdutos = [];
-        let idOrcamentoSendoEditado = null;
-        let dadosMinhaEmpresa = { nome: "", contato: "", logo: "" };
-
-        function verificarSenha() {
-            const senhaDigitada = document.getElementById('senhaAcesso').value;
-            if(senhaDigitada === SENHA_CORRETA) {
-                document.getElementById('tela-login').classList.add('hidden');
-                document.getElementById('conteudo-sistema').classList.remove('hidden');
-                carregarDadosDoNavegador();
-            } else { alert("Senha incorreta!"); }
+        // FUNÇÕES DE SINCRONIZAÇÃO (ADICIONE AO SEU SCRIPT)
+        function exportarDados() {
+            const backup = {
+                materiais: localStorage.getItem('local_materiais'),
+                bases: localStorage.getItem('local_produtosBase'),
+                embalagens: localStorage.getItem('local_embalagens'),
+                maquinas: localStorage.getItem('local_maquinas'),
+                catalogo: localStorage.getItem('local_catalogoProdutos'),
+                empresa: localStorage.getItem('local_dadosMinhaEmpresa')
+            };
+            const blob = new Blob([JSON.stringify(backup)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'backup_sistema.json';
+            a.click();
         }
 
-        function bloquearSistema() {
-            document.getElementById('senhaAcesso').value = '';
-            document.getElementById('tela-login').classList.remove('hidden');
-            document.getElementById('conteudo-sistema').classList.add('hidden');
+        function importarDados(event) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dados = JSON.parse(e.target.result);
+                if(dados.materiais) localStorage.setItem('local_materiais', dados.materiais);
+                if(dados.bases) localStorage.setItem('local_produtosBase', dados.bases);
+                if(dados.catalogo) localStorage.setItem('local_catalogoProdutos', dados.catalogo);
+                if(dados.empresa) localStorage.setItem('local_dadosMinhaEmpresa', dados.empresa);
+                alert("Sincronizado com sucesso!");
+                location.reload();
+            };
+            reader.readAsText(event.target.files[0]);
         }
 
-        function carregarDadosDoNavegador() {
-            materiais = JSON.parse(localStorage.getItem('local_materiais')) || [];
-            produtosBase = JSON.parse(localStorage.getItem('local_produtosBase')) || [];
-            embalagens = JSON.parse(localStorage.getItem('local_embalagens')) || [];
-            maquinas = JSON.parse(localStorage.getItem('local_maquinas')) || [];
-            catalogoProdutos = JSON.parse(localStorage.getItem('local_catalogoProdutos')) || [];
-            orcamentosSalvos = JSON.parse(localStorage.getItem('local_orcamentosSalvos')) || [];
-            dadosMinhaEmpresa = JSON.parse(localStorage.getItem('local_dadosMinhaEmpresa')) || { nome: "Minha Gráfica & Personalizados", contato: "(11) 99999-9999", logo: "" };
-            document.getElementById('empresaNome').value = dadosMinhaEmpresa.nome;
-            document.getElementById('empresaContato').value = dadosMinhaEmpresa.contato;
-            mostrarPrevisualizacaoLogo();
-            renderizarTudo();
-        }
-
-        function salvarDadosNoNavegador() {
-            localStorage.setItem('local_materiais', JSON.stringify(materiais));
-            localStorage.setItem('local_produtosBase', JSON.stringify(produtosBase));
-            localStorage.setItem('local_embalagens', JSON.stringify(embalagens));
-            localStorage.setItem('local_maquinas', JSON.stringify(maquinas));
-            localStorage.setItem('local_catalogoProdutos', JSON.stringify(catalogoProdutos));
-            localStorage.setItem('local_orcamentosSalvos', JSON.stringify(orcamentosSalvos));
-        }
-
-        function salvarConfiguracoesEmpresa() {
-            dadosMinhaEmpresa.nome = document.getElementById('empresaNome').value;
-            dadosMinhaEmpresa.contato = document.getElementById('empresaContato').value;
-            localStorage.setItem('local_dadosMinhaEmpresa', JSON.stringify(dadosMinhaEmpresa));
-            atualizarDocumentoFinal();
-        }
-
-        function uploadLogoEmpresa() {
-            let fileInput = document.getElementById('empresaLogoFile');
-            if (fileInput.files && fileInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    dadosMinhaEmpresa.logo = e.target.result;
-                    localStorage.setItem('local_dadosMinhaEmpresa', JSON.stringify(dadosMinhaEmpresa));
-                    mostrarPrevisualizacaoLogo();
-                    atualizarDocumentoFinal();
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-        }
-
-        function mostrarPrevisualizacaoLogo() {
-            if (dadosMinhaEmpresa.logo) {
-                document.getElementById('imgPreviewLogo').src = dadosMinhaEmpresa.logo;
-                document.getElementById('previewLogoTela').classList.remove('hidden');
-            } else { document.getElementById('previewLogoTela').classList.add('hidden'); }
-        }
-
-        function mudarAba(idAba) {
+        // COLOQUE AQUI O RESTANTE DO SEU SCRIPT ORIGINAL (mudarAba, enviarWhatsApp, etc)
+        function mudarAba(id) {
             document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden'));
-            document.getElementById(idAba).classList.remove('hidden');
-            document.querySelectorAll('.aba-btn').forEach(btn => { 
-                btn.classList.remove('bg-black', 'text-white'); 
-                btn.classList.add('bg-gray-200', 'text-gray-700'); 
-            });
-            document.getElementById('btn-' + idAba).classList.add('bg-black', 'text-white');
-            atualizarDocumentoFinal();
-            if (idAba === 'aba-historico') renderizarHistorico();
-            if (idAba === 'aba-catalogo-vazia') renderizarCatalogo();
+            document.getElementById(id).classList.remove('hidden');
         }
-
-        function adicionarMaterial() {
-            const nome = document.getElementById('matNome').value; const preco = parseFloat(document.getElementById('matPreco').value) || 0;
-            const qtd = parseInt(document.getElementById('matQtd').value) || 1; const perda = parseFloat(document.getElementById('matPerda').value) || 0;
-            if(!nome) return alert("Digite o nome.");
-            materiais.push({ nome, total: (preco / qtd) * (1 + (perda / 100)) });
-            limparCampos(['matNome', 'matPreco', 'matQtd']); salvarDadosNoNavegador(); renderizarTudo();
-        }
-
-        function adicionarProdutoBase() {
-            const nome = document.getElementById('baseNome').value; const preco = parseFloat(document.getElementById('basePreco').value) || 0;
-            const perda = parseFloat(document.getElementById('basePerda').value) || 0;
-            if(!nome) return alert("Digite o nome.");
-            produtosBase.push({ nome, total: preco * (1 + (perda / 100)) });
-            limparCampos(['baseNome', 'basePreco']); salvarDadosNoNavegador(); renderizarTudo();
-        }
-
-        function adicionarEmbalagem() {
-            const nome = document.getElementById('embNome').value; const preco = parseFloat(document.getElementById('embPreco').value) || 0;
-            const qtd = parseInt(document.getElementById('embQtd').value) || 1; const perda = parseFloat(document.getElementById('matPerda').value) || 0;
-            if(!nome) return alert("Digite o nome.");
-            embalagens.push({ nome, total: (preco / qtd) * (1 + (perda / 100)) });
-            limparCampos(['embNome', 'embPreco', 'embQtd']); salvarDadosNoNavegador(); renderizarTudo();
-        }
-
-        function adicionarMaquina() {
-            const nome = document.getElementById('maqNome').value; const tinta = parseFloat(document.getElementById('maqTinta').value) || 0;
-            const energia = parseFloat(document.getElementById('maqEnergia').value) || 0; const manut = parseFloat(document.getElementById('maqManutencao').value) || 0;
-            const lamina = parseFloat(document.getElementById('maqLamina').value) || 0; const aquec = parseFloat(document.getElementById('maqAquecimento').value) || 0;
-            const perda = parseFloat(document.getElementById('maqPerda').value) || 0;
-            if(!nome) return alert("Digite o nome.");
-            maquinas.push({ nome, total: (tinta + energia + manut + lamina + aquec) * (1 + (perda / 100)) });
-            limparCampos(['maqNome', 'maqTinta', 'maqEnergia', 'maqManutencao', 'maqLamina', 'maqAquecimento']); salvarDadosNoNavegador(); renderizarTudo();
-        }
-
-        function renderizarTudo() {
-            let tMat = document.getElementById('tabelaMateriais'); tMat.innerHTML = '';
-            materiais.forEach((m, i) => tMat.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${m.nome}</td><td class="p-2 font-bold text-black">R$ ${m.total.toFixed(2)}</td><td class="p-2"><button onclick="materiais.splice(${i},1);salvarDadosNoNavegador();renderizarTudo();" class="text-red-500">Excluir</button></td></tr>`);
-            let tBase = document.getElementById('tabelaProdutosBase'); tBase.innerHTML = '';
-            produtosBase.forEach((b, i) => tBase.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${b.nome}</td><td class="p-2 font-bold text-black">R$ ${b.total.toFixed(2)}</td><td class="p-2"><button onclick="produtosBase.splice(${i},1);salvarDadosNoNavegador();renderizarTudo();" class="text-red-500">Excluir</button></td></tr>`);
-            let tEmb = document.getElementById('tabelaEmbalagens'); tEmb.innerHTML = '';
-            embalagens.forEach((e, i) => tEmb.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${e.nome}</td><td class="p-2 font-bold text-black">R$ ${e.total.toFixed(2)}</td><td class="p-2"><button onclick="embalagens.splice(${i},1);salvarDadosNoNavegador();renderizarTudo();" class="text-red-500">Excluir</button></td></tr>`);
-            let tMaq = document.getElementById('tabelaMaquinas'); tMaq.innerHTML = '';
-            maquinas.forEach((mq, i) => tMaq.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${mq.nome}</td><td class="p-2 font-bold text-black">R$ ${mq.total.toFixed(2)}</td><td class="p-2"><button onclick="maquinas.splice(${i},1);salvarDadosNoNavegador();renderizarTudo();" class="text-red-500">Excluir</button></td></tr>`);
-            atualizarDropdown('selectMat', materiais, '📄'); atualizarDropdown('selectBase', produtosBase, '☕');
-            atualizarDropdown('selectEmb', embalagens, '📦'); atualizarDropdown('selectMaq', maquinas, '⚙️');
-            renderizarOrcamento(); renderizarCatalogo();
-        }
-
-        function atualizarDropdown(idSelect, banco, icone) {
-            let select = document.getElementById(idSelect); select.innerHTML = '';
-            banco.forEach((item, i) => select.innerHTML += `<option value="${i}">${icone} ${item.nome} (R$ ${item.total.toFixed(2)})</option>`);
-        }
-
-        function adicionarComponente(tipo) {
-            let idx = document.getElementById(tipo === 'mat' ? 'selectMat' : (tipo === 'base' ? 'selectBase' : (tipo === 'emb' ? 'selectEmb' : 'selectMaq'))).value;
-            if(idx === null || idx === "") return alert("Selecione um item.");
-            let obj = tipo === 'mat' ? materiais[idx] : (tipo === 'base' ? produtosBase[idx] : (tipo === 'emb' ? embalagens[idx] : maquinas[idx]));
-            let custoFinal = 0, detalheUso = "", prefixo = "";
-            if (tipo === 'mat') {
-                let rendimiento = parseFloat(document.getElementById('usoRendimento').value) || 1;
-                let fracao = parseFloat(document.getElementById('usoFracao').value) || 1;
-                custoFinal = (obj.total / rendimiento) * fracao;
-                detalheUso = `Rend: ${rendimiento} | Frac: ${fracao}`; prefixo = "[PAPEL] ";
-            } else {
-                custoFinal = obj.total; detalheUso = "1 un. inteira";
-                prefixo = tipo === 'base' ? '[BASE] ' : (tipo === 'emb' ? '[EMBALAGEM] ' : '[MÁQUINA] ');
-            }
-            orcamentoAtual.push({ nome: prefixo + obj.nome, detalheUso, custoFinal });
-            renderizarOrcamento();
-        }
-
-        function renderizarOrcamento() {
-            let tOrc = document.getElementById('tabelaOrcamentoAtual'); tOrc.innerHTML = '';
-            orcamentoAtual.forEach((item, idx) => {
-                tOrc.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${item.nome}</td><td class="p-2 text-gray-500">${item.detalheUso}</td><td class="p-2 font-bold">R$ ${item.custoFinal.toFixed(2)}</td><td class="p-2"><button onclick="orcamentoAtual.splice(${idx},1);renderizarOrcamento();" class="text-red-500">Remover</button></td></tr>`;
-            });
-            calcularTudo();
-        }
-
-        function calcularTudo() {
-            let custoItens = 0; orcamentoAtual.forEach(item => custoItens += item.custoFinal);
-            const salario = parseFloat(document.getElementById('salario').value) || 0;
-            const horas = parseFloat(document.getElementById('horasMes').value) || 1;
-            const tempo = parseFloat(document.getElementById('tempoItem').value) || 0;
-            const margem = parseFloat(document.getElementById('margemLucro').value) || 0;
-            let custoMaoObra = tempo * ((salario / horas) / 60);
-            let precoSugerido = (custoItens + custoMaoObra) * (1 + (margem / 100));
-            document.getElementById('resPrecoVenda').innerText = `R$ ${precoSugerido.toFixed(2)}`;
-            document.getElementById('precoFinalAjustavel').value = precoSugerido.toFixed(2);
-        }
-
-        function jogarProdutoNoPedido() {
-            let nomeProd = document.getElementById('nomeProdutoCalculado').value;
-            let precoFinal = parseFloat(document.getElementById('precoFinalAjustavel').value) || 0;
-            if(!nomeProd || precoFinal <= 0) return alert("Ajuste o produto e o preço!");
-            executarInclusaoNoPedido(nomeProd, precoFinal);
-            orcamentoAtual = []; renderizarOrcamento();
-        }
-
-        function executarInclusaoNoPedido(nome, precoUnitario) {
-            let qtdDesejada = parseInt(prompt(`Quantas unidades de "${nome}"?`, "1")) || 1;
-            pedidoCliente.push({ descricao: nome, quantidade: qtdDesejada, valorUnitario: precoUnitario, valorTotal: precoUnitario * qtdDesejada });
-            mudarAba('aba-gerar-pedido');
-        }
-
-        function processarFichaParaSalvar() {
-            let nome = document.getElementById('nomeProdutoCalculado').value;
-            let precoFinal = parseFloat(document.getElementById('precoFinalAjustavel').value) || 0;
-            let descricao = document.getElementById('descProdutoCalculado').value || "";
-            if(!nome || precoFinal <= 0) return alert("Preço ou nome inválido.");
-            let fileInput = document.getElementById('fotoProdutoCalculado');
-            if (fileInput.files && fileInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function(e) { salvarProdutoNoCatalogo(nome, descricao, e.target.result, precoFinal); };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else { salvarProdutoNoCatalogo(nome, descricao, "", precoFinal); }
-        }
-
-        function salvarProdutoNoCatalogo(nome, descricao, imagemBase64, preco) {
-            let indexExistente = catalogoProdutos.findIndex(p => p.nome.toLowerCase() === nome.toLowerCase());
-            let fotoFinal = imagemBase64 || (indexExistente !== -1 ? catalogoProdutos[indexExistente].imagem : "");
-            let produtoPronto = {
-                id: indexExistente !== -1 ? catalogoProdutos[indexExistente].id : Date.now().toString(),
-                nome, descricao, imagem: fotoFinal, precoVenda: preco,
-                estrutura: [...orcamentoAtual], tempo: document.getElementById('tempoItem').value, lucro: document.getElementById('margemLucro').value
-            };
-            if(indexExistente !== -1) { if(confirm(`Atualizar "${nome}"?`)) catalogoProdutos[indexExistente] = produtoPronto; }
-            else { catalogoProdutos.push(produtoPronto); }
-            salvarDadosNoNavegador(); alert("Produto salvo no catálogo!"); renderizarCatalogo();
-        }
-
-        function renderizarCatalogo() {
-            let container = document.getElementById('listaCatalogoProdutos');
-            document.getElementById('contadorCatalogo').innerText = catalogoProdutos.length;
-            container.innerHTML = '';
-            if(catalogoProdutos.length === 0) { container.innerHTML = `<p class="col-span-full text-center py-10 text-gray-400 italic">Nenhum produto no catálogo.</p>`; return; }
-            catalogoProdutos.forEach(prod => {
-                let foto = prod.imagem ? `<img src="${prod.imagem}" class="w-full h-32 object-cover rounded-lg mb-2">` : `<div class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 font-bold mb-2">SEM FOTO</div>`;
-                container.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                        ${foto}
-                        <h4 class="font-bold text-sm truncate">${prod.nome}</h4>
-                        <p class="text-[11px] text-gray-500 h-8 overflow-hidden mb-2">${prod.descricao || 'Sem descrição'}</p>
-                        <p class="text-lg font-black text-green-700 mb-3">R$ ${prod.precoVenda.toFixed(2)}</p>
-                        <div class="flex gap-2">
-                            <button onclick="adicionarProdutoCatalogoAoPedido('${prod.id}')" class="bg-black text-white text-[10px] font-bold py-2 rounded flex-1">🛒 Pedido</button>
-                            <button onclick="carregarReceitaDoCatalogo('${prod.id}')" class="bg-gray-200 text-gray-700 text-[10px] font-bold py-2 rounded px-2">⚙️ Editar</button>
-                            <button onclick="deletarProdutoDoCatalogo('${prod.id}')" class="text-red-500 font-bold px-2">🗑️</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function adicionarProdutoCatalogoAoPedido(id) { 
-            let prod = catalogoProdutos.find(p => p.id === id); 
-            if(prod) executarInclusaoNoPedido(prod.nome, prod.precoVenda); 
-        }
-
-        function carregarReceitaDoCatalogo(id) {
-            let prod = catalogoProdutos.find(p => p.id === id); if(!prod) return;
-            document.getElementById('nomeProdutoCalculado').value = prod.nome;
-            document.getElementById('descProdutoCalculado').value = prod.descricao || "";
-            document.getElementById('tempoItem').value = prod.tempo || 15;
-            document.getElementById('margemLucro').value = prod.lucro || 100;
-            orcamentoAtual = [...prod.estrutura]; mudarAba('aba-orcamento'); renderizarOrcamento();
-            document.getElementById('precoFinalAjustavel').value = prod.precoVenda.toFixed(2);
-        }
-
-        function deletarProdutoDoCatalogo(id) { if(confirm("Remover do catálogo?")) { catalogoProdutos = catalogoProdutos.filter(p => p.id !== id); salvarDadosNoNavegador(); renderizarCatalogo(); } }
-
-        function atualizarDocumentoFinal() {
-            document.getElementById('printEmpresaNome').innerText = dadosMinhaEmpresa.nome || "Minha Empresa";
-            document.getElementById('printEmpresaContato').innerText = "Contato: " + (dadosMinhaEmpresa.contato || "--");
-            let wrapperLogo = document.getElementById('wrapperLogoPrint');
-            if (dadosMinhaEmpresa.logo) { document.getElementById('printEmpresaLogo').src = dadosMinhaEmpresa.logo; wrapperLogo.classList.remove('hidden'); }
-            else { wrapperLogo.classList.add('hidden'); }
-            document.getElementById('printClienteNome').innerText = document.getElementById('clienteNome').value || "Não informado";
-            document.getElementById('printClienteContato').innerText = document.getElementById('clienteContato').value || "Não informado";
-            document.getElementById('dataOrcamento').innerText = new Date().toLocaleDateString('pt-BR');
-            let tcorpo = document.getElementById('tabelaItensDoPedido'); tcorpo.innerHTML = '';
-            let ttela = document.getElementById('tabelaItensTelaOrcamento'); ttela.innerHTML = '';
-            let valorGeral = 0;
-            pedidoCliente.forEach((item, index) => {
-                valorGeral += item.valorTotal;
-                tcorpo.innerHTML += `<tr><td class="p-3 font-bold">${item.descricao}</td><td class="p-3 text-center">${item.quantidade}</td><td class="p-3 text-right">R$ ${item.valorUnitario.toFixed(2)}</td><td class="p-3 text-right font-black">R$ ${item.valorTotal.toFixed(2)}</td></tr>`;
-                ttela.innerHTML += `<tr class="border-b"><td class="p-2 font-bold">${item.descricao}</td><td class="p-2 text-center">${item.quantidade}</td><td class="p-2 text-right">R$ ${item.valorUnitario.toFixed(2)}</td><td class="p-2 text-right font-bold text-green-700">R$ ${item.valorTotal.toFixed(2)}</td><td class="p-2 text-center"><button onclick="removerItemDoPedido(${index})" class="text-red-500 font-bold">✕</button></td></tr>`;
-            });
-            document.getElementById('printValorTotalPedido').innerText = `R$ ${valorGeral.toFixed(2)}`;
-        }
-
-        function removerItemDoPedido(index) { pedidoCliente.splice(index, 1); atualizarDocumentoFinal(); }
-
-        // ========================================================
-        // FUNÇÃO DE ENVIO PELO WHATSAPP (NOVIDADE)
-        // ========================================================
-        function enviarWhatsApp() {
-            const nomeCliente = document.getElementById('clienteNome').value;
-            const telefone = document.getElementById('clienteContato').value.replace(/\D/g, '');
-            if (!telefone) return alert("Por favor, preencha o WhatsApp do cliente.");
-            if (pedidoCliente.length === 0) return alert("Adicione itens ao orçamento primeiro.");
-
-            let totalGeral = 0;
-            let mensagem = `Olá ${nomeCliente || 'cliente'}, segue seu orçamento:\n\n`;
-            pedidoCliente.forEach(item => {
-                mensagem += `✅ *${item.quantidade}x ${item.descricao}*\n`;
-                mensagem += `Unitário: R$ ${item.valorUnitario.toFixed(2)} | Total: R$ ${item.valorTotal.toFixed(2)}\n`;
-                mensagem += `----------------------------\n`;
-                totalGeral += item.valorTotal;
-            });
-            mensagem += `\n💰 *TOTAL DO PEDIDO: R$ ${totalGeral.toFixed(2)}*`;
-            mensagem += `\n\n*Validade:* 15 dias\n*Emitido por:* ${dadosMinhaEmpresa.nome}`;
-
-            const url = `https://api.whatsapp.com/send?phone=55${telefone}&text=${encodeURIComponent(mensagem)}`;
-            window.open(url, '_blank');
-        }
-
-        function salvarOrcamentoNoBanco() {
-            if (pedidoCliente.length === 0) return alert("Pedido vazio.");
-            let totalGeral = 0; pedidoCliente.forEach(i => totalGeral += i.valorTotal);
-            let dadosOrcamento = {
-                id: idOrcamentoSendoEditado || Date.now().toString(), data: new Date().toLocaleDateString('pt-BR'),
-                clienteNome: document.getElementById('clienteNome').value || "Cliente sem Nome",
-                clienteContato: document.getElementById('clienteContato').value || "Não informado",
-                itens: [...pedidoCliente], total: totalGeral
-            };
-            if (idOrcamentoSendoEditado) {
-                let idx = orcamentosSalvos.findIndex(o => o.id === idOrcamentoSendoEditado);
-                if(idx !== -1) orcamentosSalvos[idx] = dadosOrcamento;
-            } else { orcamentosSalvos.unshift(dadosOrcamento); }
-            cancelarEdicao(); salvarDadosNoNavegador(); mudarAba('aba-historico');
-        }
-
-        function renderizarHistorico() {
-            let tbody = document.getElementById('listaHistoricoOrcamentos'); tbody.innerHTML = '';
-            if (orcamentosSalvos.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400 italic">Vazio.</td></tr>`; return; }
-            orcamentosSalvos.forEach(orc => {
-                tbody.innerHTML += `<tr class="border-b hover:bg-gray-50"><td class="p-3">${orc.data}</td><td class="p-3 font-bold">${orc.clienteNome}</td><td class="p-3">${orc.clienteContato}</td><td class="p-3 text-right font-bold">R$ ${orc.total.toFixed(2)}</td><td class="p-3 text-center"><button onclick="carregarOrcamentoParaEdicao('${orc.id}')" class="bg-black text-white px-2 py-1 rounded text-[11px]">✏️ Abrir</button> <button onclick="deletarOrcamentoDoBanco('${orc.id}')" class="text-red-500 font-semibold text-[11px]">Excluir</button></td></tr>`;
-            });
-        }
-
-        function carregarOrcamentoParaEdicao(id) {
-            let orc = orcamentosSalvos.find(o => o.id === id); if (!orc) return;
-            idOrcamentoSendoEditado = orc.id;
-            document.getElementById('clienteNome').value = orc.clienteNome; document.getElementById('clienteContato').value = orc.clienteContato;
-            pedidoCliente = [...orc.itens]; document.getElementById('alertaEdicao').classList.remove('hidden');
-            mudarAba('aba-gerar-pedido');
-        }
-
-        function deletarOrcamentoDoBanco(id) { if (confirm("Deletar?")) { orcamentosSalvos = orcamentosSalvos.filter(o => o.id !== id); salvarDadosNoNavegador(); renderizarHistorico(); } }
-        function cancelarEdicao() { idOrcamentoSendoEditado = null; pedidoCliente = []; document.getElementById('clienteNome').value = ''; document.getElementById('clienteContato').value = ''; document.getElementById('alertaEdicao').classList.add('hidden'); atualizarDocumentoFinal(); }
-
-        document.getElementById('clienteNome').addEventListener('input', atualizarDocumentoFinal);
-        document.getElementById('clienteContato').addEventListener('input', atualizarDocumentoFinal);
-        function limparCampos(ids) { ids.forEach(id => document.getElementById(id).value = ''); }
     </script>
 </body>
 </html>
