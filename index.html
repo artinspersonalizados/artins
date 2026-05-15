@@ -3,86 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Gestor Pro v10.2</title>
+    <title>Sistema Gestor Pro v10.2 - Sincronizado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
             body { background: white; padding: 0; margin: 0; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            #documento-impressao { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; }
+            #aba-gerar-pedido { padding: 0 !important; background: white !important; }
+            #documento-impressao { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
         }
     </style>
 </head>
 <body class="bg-gray-100 font-sans text-gray-800">
 
-    <div id="conteudo-sistema" class="max-w-5xl mx-auto my-4 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+    <div id="tela-login" class="fixed inset-0 bg-gray-900 flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-sm w-full border border-gray-200 text-center">
+            <div class="bg-black text-white w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black mx-auto mb-2">G</div>
+            <h2 class="text-xl font-bold text-gray-900">Gestor Pro</h2>
+            <input type="password" id="senhaAcesso" placeholder="Senha: 270217" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm mt-4 focus:outline-black text-center">
+            <button onclick="verificarSenha()" class="w-full bg-black text-white p-2.5 rounded-lg font-bold text-sm mt-3 hover:bg-gray-800">Acessar Painel</button>
+        </div>
+    </div>
+
+    <div id="conteudo-sistema" class="hidden max-w-5xl mx-auto my-4 md:my-8 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 no-print">
         
-        <div class="bg-gray-50 p-2 flex flex-wrap gap-1.5 justify-center border-b border-gray-200 no-print">
-            <button onclick="mudarAba('aba-materiais')" class="aba-btn bg-black text-white px-3 py-2 rounded-lg text-xs">1. Papéis</button>
-            <button onclick="mudarAba('aba-orcamento')" class="aba-btn bg-gray-200 px-3 py-2 rounded-lg text-xs">5. Montar</button>
-            <button onclick="mudarAba('aba-gerar-pedido')" class="aba-btn bg-gray-200 px-3 py-2 rounded-lg text-xs font-bold">📋 7. Orçamento/Sincronizar</button>
+        <div class="bg-black p-4 px-6 text-white flex justify-between items-center">
+            <h1 class="text-lg font-bold">GESTOR DE ORÇAMENTOS</h1>
+            <button onclick="bloquearSistema()" class="text-xs font-bold text-gray-400 hover:text-white">Bloquear 🔒</button>
+        </div>
+
+        <div class="bg-gray-50 p-2 flex flex-wrap gap-1.5 justify-center border-b border-gray-200">
+            <button onclick="mudarAba('aba-materiais')" id="btn-aba-materiais" class="aba-btn bg-black text-white px-3 py-2 rounded-lg text-xs font-medium">1. Papéis</button>
+            <button onclick="mudarAba('aba-produtos-base')" id="btn-aba-produtos-base" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-medium">2. Bases</button>
+            <button onclick="mudarAba('aba-embalagens')" id="btn-aba-embalagens" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-medium">3. Embalagens</button>
+            <button onclick="mudarAba('aba-maquinas')" id="btn-aba-maquinas" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-medium">4. Máquinas</button>
+            <button onclick="mudarAba('aba-orcamento')" id="btn-aba-orcamento" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-black">🛠️ 5. Montar</button>
+            <button onclick="mudarAba('aba-catalogo-vazia')" id="btn-aba-catalogo-vazia" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-400">🛍️ 6. Catálogo</button>
+            <button onclick="mudarAba('aba-gerar-pedido')" id="btn-aba-gerar-pedido" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-400">📋 7. Orçamento / Sync</button>
+            <button onclick="mudarAba('aba-historico')" id="btn-aba-historico" class="aba-btn bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-400">📁 8. Histórico</button>
         </div>
 
         <div class="p-6">
-            <div id="aba-gerar-pedido" class="aba-conteudo hidden">
-                <div class="bg-blue-50 p-4 rounded-xl mb-6 border border-blue-200 no-print">
-                    <h3 class="text-xs font-bold text-blue-800 uppercase mb-2">🔄 Sincronizar PC e Celular</h3>
+            <div id="aba-materiais" class="aba-conteudo">
+                <h2 class="text-sm font-bold uppercase mb-2">Cadastro de Papéis</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border">
+                    <input type="text" id="matNome" placeholder="Nome do Papel" class="p-2 border rounded text-sm"><input type="number" id="matPreco" placeholder="Preço Pacote" class="p-2 border rounded text-sm"><input type="number" id="matQtd" placeholder="Qtd Folhas" class="p-2 border rounded text-sm"><input type="number" id="matPerda" value="5" class="p-2 border rounded text-sm">
+                    <button onclick="adicionarMaterial()" class="md:col-span-4 bg-black text-white p-2 rounded text-sm font-bold">Salvar Material</button>
+                </div>
+                <table class="w-full text-xs text-left border-collapse"><tbody id="tabelaMateriais"></tbody></table>
+            </div>
+
+            <div id="aba-produtos-base" class="aba-conteudo hidden">
+                <h2 class="text-sm font-bold uppercase mb-2">Produtos Base (Itens Lisos)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border">
+                    <input type="text" id="baseNome" placeholder="Ex: Caneca" class="p-2 border rounded text-sm"><input type="number" id="basePreco" placeholder="Preço Unitário" class="p-2 border rounded text-sm"><input type="number" id="basePerda" value="5" class="p-2 border rounded text-sm">
+                    <button onclick="adicionarProdutoBase()" class="md:col-span-3 bg-black text-white p-2 rounded text-sm font-bold">Salvar Base</button>
+                </div>
+                <table class="w-full text-xs text-left border-collapse"><tbody id="tabelaProdutosBase"></tbody></table>
+            </div>
+
+            <div id="aba-embalagens" class="aba-conteudo hidden">
+                <h2 class="text-sm font-bold uppercase mb-2">Embalagens</h2>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-4 rounded-xl mb-4 border">
+                    <input type="text" id="embNome" placeholder="Ex: Caixa" class="p-2 border rounded text-sm"><input type="number" id="embPreco" placeholder="Preço Lote" class="p-2 border rounded text-sm"><input type="number" id="embQtd" placeholder="Qtd Lote" class="p-2 border rounded text-sm"><input type="number" id="embPerda" value="2" class="p-2 border rounded text-sm">
+                    <button onclick="adicionarEmbalagem()" class="md:col-span-4 bg-black text-white p-2 rounded text-sm font-bold">Salvar Embalagem</button>
+                </div>
+                <table class="w-full text-xs text-left border-collapse"><tbody id="tabelaEmbalagens"></tbody></table>
+            </div>
+
+            <div id="aba-maquinas" class="aba-conteudo hidden">
+                <h2 class="text-sm font-bold uppercase mb-2">Custos de Máquinas</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-xl border">
+                    <input type="text" id="maqNome" placeholder="Nome Máquina" class="p-2 border rounded text-sm md:col-span-2">
+                    <input type="number" id="maqTinta" placeholder="Custo Tinta" class="p-2 border rounded text-sm" value="0.00">
+                    <input type="number" id="maqEnergia" placeholder="Custo Energia" class="p-2 border rounded text-sm" value="0.00">
+                    <input type="number" id="maqManutencao" placeholder="Custo Manutenção" class="p-2 border rounded text-sm" value="0.00">
+                    <input type="number" id="maqPerda" value="5" class="p-2 border rounded text-sm">
+                    <button onclick="adicionarMaquina()" class="md:col-span-2 bg-black text-white p-2 rounded text-sm font-bold">Salvar Máquina</button>
+                </div>
+                <table class="w-full text-xs text-left border-collapse mt-4"><tbody id="tabelaMaquinas"></tbody></table>
+            </div>
+
+            <div id="aba-orcamento" class="aba-conteudo hidden space-y-4">
+                <div class="bg-gray-900 text-white p-4 rounded-xl">
+                    <label class="block text-[10px] uppercase font-bold text-gray-400">Nome do produto:</label>
+                    <input type="text" id="nomeProdutoCalculado" value="Novo Produto" class="w-full p-2 bg-gray-800 border-none rounded text-sm font-bold mb-2">
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportarDados()" class="bg-blue-600 text-white text-[10px] font-bold p-2 rounded-lg">📤 Exportar Backup do PC</button>
-                        <div class="relative">
-                            <input type="file" id="inputImport" class="hidden" onchange="importarDados(event)">
-                            <button onclick="document.getElementById('inputImport').click()" class="w-full bg-green-600 text-white text-[10px] font-bold p-2 rounded-lg">📥 Importar no Celular</button>
+                        <input type="text" id="descProdutoCalculado" placeholder="Descrição Curta" class="p-2 bg-gray-800 rounded text-xs">
+                        <input type="file" id="fotoProdutoCalculado" accept="image/*" class="text-xs">
+                    </div>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-xl border grid grid-cols-2 md:grid-cols-4 gap-2">
+                    <div><label class="text-[10px]">Salário/Mês</label><input type="number" id="salario" value="2000" oninput="calcularTudo()" class="w-full p-1 border rounded text-xs"></div>
+                    <div><label class="text-[10px]">Horas/Mês</label><input type="number" id="horasMes" value="160" oninput="calcularTudo()" class="w-full p-1 border rounded text-xs"></div>
+                    <div><label class="text-[10px]">Tempo Prod (Min)</label><input type="number" id="tempoItem" value="15" oninput="calcularTudo()" class="w-full p-1 border rounded text-xs"></div>
+                    <div><label class="text-[10px]">Lucro (%)</label><input type="number" id="margemLucro" value="100" oninput="calcularTudo()" class="w-full p-1 border rounded text-xs"></div>
+                </div>
+                <div class="border rounded-xl p-3 bg-white space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        <div class="p-2 bg-gray-50 rounded border flex justify-between gap-1">
+                            <select id="selectMat" class="p-1 border rounded w-1/2"></select>
+                            <input type="number" id="usoRendimento" value="1" title="Rend" class="w-10 p-1 border rounded text-center">
+                            <input type="number" id="usoFracao" value="1" title="Frac" class="w-10 p-1 border rounded text-center">
+                            <button onclick="adicionarComponente('mat')" class="bg-black text-white px-2 py-1 rounded font-bold">+</button>
+                        </div>
+                        <div class="p-2 bg-gray-50 rounded border flex justify-between gap-2">
+                            <select id="selectBase" class="p-1 border rounded flex-1"></select>
+                            <button onclick="adicionarComponente('base')" class="bg-black text-white px-2 py-1 rounded font-bold">+</button>
+                        </div>
+                        <div class="p-2 bg-gray-50 rounded border flex justify-between gap-2">
+                            <select id="selectEmb" class="p-1 border rounded flex-1"></select>
+                            <button onclick="adicionarComponente('emb')" class="bg-black text-white px-2 py-1 rounded font-bold">+</button>
+                        </div>
+                        <div class="p-2 bg-gray-50 rounded border flex justify-between gap-2">
+                            <select id="selectMaq" class="p-1 border rounded flex-1"></select>
+                            <button onclick="adicionarComponente('maq')" class="bg-black text-white px-2 py-1 rounded font-bold">+</button>
                         </div>
                     </div>
                 </div>
+                <table class="w-full text-left text-xs bg-white border"><tbody id="tabelaOrcamentoAtual"></tbody></table>
+                <div class="bg-gray-50 border-2 border-black p-4 rounded-xl text-center">
+                    <span class="text-[10px] uppercase font-bold text-gray-500 block">Preço Final Ajustável</span>
+                    <input type="number" id="precoFinalAjustavel" class="bg-transparent text-black text-xl font-black text-center focus:outline-none" value="0.00">
+                    <div class="flex gap-2 justify-center mt-2">
+                        <button onclick="processarFichaParaSalvar()" class="bg-black text-white text-[10px] font-bold px-4 py-2 rounded-lg">💾 Salvar Catálogo</button>
+                        <button onclick="jogarProdutoNoPedido()" class="bg-green-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg">🛒 No Orçamento</button>
+                    </div>
+                </div>
+            </div>
 
-                <input type="text" id="clienteNome" placeholder="Nome do Cliente" class="w-full p-2 border mb-2 rounded text-sm">
-                <input type="text" id="clienteContato" placeholder="WhatsApp do Cliente" class="w-full p-2 border mb-2 rounded text-sm">
-                
-                <button onclick="enviarWhatsApp()" class="w-full bg-green-600 text-white font-bold p-4 rounded-xl mt-4">📲 ENVIAR PARA WHATSAPP</button>
+            <div id="aba-catalogo-vazia" class="aba-conteudo hidden">
+                <div id="listaCatalogoProdutos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+
+            <div id="aba-gerar-pedido" class="aba-conteudo hidden">
+                <div class="bg-blue-600 text-white p-4 rounded-2xl mb-6 shadow-lg no-print">
+                    <h3 class="text-xs font-black uppercase mb-3 flex items-center gap-2">🔄 Sincronizar Computador & iPhone</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="exportarDados()" class="bg-white text-blue-600 font-bold p-3 rounded-xl text-[10px] hover:bg-gray-100 transition">📤 Exportar do PC</button>
+                        <div class="relative">
+                            <input type="file" id="inputImport" class="hidden" onchange="importarDados(event)">
+                            <button onclick="document.getElementById('inputImport').click()" class="w-full bg-blue-900 text-white font-bold p-3 rounded-xl text-[10px] hover:bg-black transition">📥 Importar no Celular</button>
+                        </div>
+                    </div>
+                    <p class="text-[9px] mt-2 opacity-80">* Exporte no PC, mande o arquivo pro WhatsApp, e importe no Celular.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border mb-6 no-print">
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold uppercase border-b pb-1">⚙️ Meus Dados</h3>
+                        <input type="text" id="empresaNome" placeholder="Nome da Empresa" class="w-full p-2 border rounded text-xs" oninput="salvarConfiguracoesEmpresa()">
+                        <input type="text" id="empresaContato" placeholder="Seu Telefone" class="w-full p-2 border rounded text-xs" oninput="salvarConfiguracoesEmpresa()">
+                        <input type="file" id="empresaLogoFile" accept="image/*" class="w-full text-xs" onchange="uploadLogoEmpresa()">
+                    </div>
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold uppercase border-b pb-1">👤 Cliente</h3>
+                        <input type="text" id="clienteNome" placeholder="Nome do Cliente" class="w-full p-2 border rounded text-xs">
+                        <input type="text" id="clienteContato" placeholder="WhatsApp (Somente Números)" class="w-full p-2 border rounded text-xs">
+                    </div>
+                </div>
+
+                <table class="w-full text-xs mb-4 no-print border rounded overflow-hidden">
+                    <thead class="bg-gray-100 border-b"><tr><th class="p-2">Item</th><th class="p-2 text-center">Qtd</th><th class="p-2 text-right">Total</th><th class="p-2 text-center">X</th></tr></thead>
+                    <tbody id="tabelaItensTelaOrcamento"></tbody>
+                </table>
+
+                <div class="flex flex-wrap gap-2 justify-end no-print">
+                    <button onclick="enviarWhatsApp()" class="bg-green-600 text-white font-bold px-6 py-3 rounded-xl text-xs shadow-lg flex items-center gap-2">📲 Enviar para WhatsApp</button>
+                    <button onclick="salvarOrcamentoNoBanco()" class="bg-blue-700 text-white font-bold px-6 py-3 rounded-xl text-xs">💾 Salvar Histórico</button>
+                    <button onclick="window.print()" class="bg-black text-white font-bold px-6 py-3 rounded-xl text-xs">🖨️ Gerar PDF</button>
+                </div>
+            </div>
+
+            <div id="aba-historico" class="aba-conteudo hidden">
+                <table class="w-full text-xs border text-left rounded-xl overflow-hidden">
+                    <thead class="bg-black text-white"><tr><th class="p-3">Data</th><th class="p-3">Cliente</th><th class="p-3 text-right">Total</th><th class="p-3 text-center">Ações</th></tr></thead>
+                    <tbody id="listaHistoricoOrcamentos"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    <div id="documento-impressao" class="hidden print:block bg-white p-10 max-w-[210mm] mx-auto">
+        <div class="flex justify-between border-b pb-6 mb-8">
+            <div class="flex items-center gap-4">
+                <img id="printEmpresaLogo" src="" class="max-h-16 hidden">
+                <div>
+                    <h2 id="printEmpresaNome" class="text-xl font-black uppercase">--</h2>
+                    <p id="printEmpresaContato" class="text-xs text-gray-600">--</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h4 class="text-lg font-black">ORÇAMENTO</h4>
+                <p class="text-xs">Data: <span id="dataOrcamento">--</span></p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-8 bg-gray-50 p-4 rounded-xl border">
+            <div><span class="text-[10px] font-bold block uppercase text-gray-500">Cliente:</span><span id="printClienteNome" class="font-bold">--</span></div>
+            <div><span class="text-[10px] font-bold block uppercase text-gray-500">Contato:</span><span id="printClienteContato" class="font-bold">--</span></div>
+        </div>
+        <table class="w-full text-sm mb-8 border-t-2 border-black">
+            <thead><tr class="bg-gray-100"><th class="p-3 text-left">Descrição</th><th class="p-3 text-center">Qtd</th><th class="p-3 text-right">Total</th></tr></thead>
+            <tbody id="tabelaItensDoPedido"></tbody>
+        </table>
+        <div class="text-right bg-black text-white p-4 rounded-xl">
+            <span class="text-xs uppercase">Total do Pedido:</span>
+            <div id="printValorTotalPedido" class="text-2xl font-black">R$ 0,00</div>
+        </div>
+    </div>
+
     <script>
-        // FUNÇÕES DE SINCRONIZAÇÃO (ADICIONE AO SEU SCRIPT)
+        const SENHA_CORRETA = "270217"; 
+        let materiais = [], produtosBase = [], embalagens = [], maquinas = [], orcamentoAtual = [], pedidoCliente = [], orcamentosSalvos = [], catalogoProdutos = [];
+        let dadosMinhaEmpresa = { nome: "", contato: "", logo: "" };
+
+        function verificarSenha() { if(document.getElementById('senhaAcesso').value === SENHA_CORRETA) { document.getElementById('tela-login').classList.add('hidden'); document.getElementById('conteudo-sistema').classList.remove('hidden'); carregarDadosDoNavegador(); } else { alert("Incorreta!"); } }
+        function bloquearSistema() { document.getElementById('tela-login').classList.remove('hidden'); document.getElementById('conteudo-sistema').classList.add('hidden'); }
+
+        function carregarDadosDoNavegador() {
+            materiais = JSON.parse(localStorage.getItem('local_materiais')) || [];
+            produtosBase = JSON.parse(localStorage.getItem('local_produtosBase')) || [];
+            embalagens = JSON.parse(localStorage.getItem('local_embalagens')) || [];
+            maquinas = JSON.parse(localStorage.getItem('local_maquinas')) || [];
+            catalogoProdutos = JSON.parse(localStorage.getItem('local_catalogoProdutos')) || [];
+            orcamentosSalvos = JSON.parse(localStorage.getItem('local_orcamentosSalvos')) || [];
+            dadosMinhaEmpresa = JSON.parse(localStorage.getItem('local_dadosMinhaEmpresa')) || { nome: "Minha Empresa", contato: "99999", logo: "" };
+            document.getElementById('empresaNome').value = dadosMinhaEmpresa.nome;
+            document.getElementById('empresaContato').value = dadosMinhaEmpresa.contato;
+            renderizarTudo();
+        }
+
+        function salvarDadosNoNavegador() {
+            localStorage.setItem('local_materiais', JSON.stringify(materiais));
+            localStorage.setItem('local_produtosBase', JSON.stringify(produtosBase));
+            localStorage.setItem('local_embalagens', JSON.stringify(embalagens));
+            localStorage.setItem('local_maquinas', JSON.stringify(maquinas));
+            localStorage.setItem('local_catalogoProdutos', JSON.stringify(catalogoProdutos));
+            localStorage.setItem('local_orcamentosSalvos', JSON.stringify(orcamentosSalvos));
+        }
+
+        // --- FUNÇÕES DE SINCRONIZAÇÃO (PARA IPHONE) ---
         function exportarDados() {
             const backup = {
-                materiais: localStorage.getItem('local_materiais'),
-                bases: localStorage.getItem('local_produtosBase'),
-                embalagens: localStorage.getItem('local_embalagens'),
-                maquinas: localStorage.getItem('local_maquinas'),
-                catalogo: localStorage.getItem('local_catalogoProdutos'),
-                empresa: localStorage.getItem('local_dadosMinhaEmpresa')
+                m: materiais, b: produtosBase, e: embalagens, maq: maquinas, c: catalogoProdutos, h: orcamentosSalvos, empresa: dadosMinhaEmpresa
             };
             const blob = new Blob([JSON.stringify(backup)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'backup_sistema.json';
+            a.download = 'backup_sistema_artins.json';
             a.click();
         }
 
         function importarDados(event) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const dados = JSON.parse(e.target.result);
-                if(dados.materiais) localStorage.setItem('local_materiais', dados.materiais);
-                if(dados.bases) localStorage.setItem('local_produtosBase', dados.bases);
-                if(dados.catalogo) localStorage.setItem('local_catalogoProdutos', dados.catalogo);
-                if(dados.empresa) localStorage.setItem('local_dadosMinhaEmpresa', dados.empresa);
-                alert("Sincronizado com sucesso!");
+                const d = JSON.parse(e.target.result);
+                if(d.m) materiais = d.m; if(d.b) produtosBase = d.b; if(d.e) embalagens = d.e; if(d.maq) maquinas = d.maq; if(d.c) catalogoProdutos = d.c; if(d.h) orcamentosSalvos = d.h; if(d.empresa) dadosMinhaEmpresa = d.empresa;
+                salvarDadosNoNavegador();
+                localStorage.setItem('local_dadosMinhaEmpresa', JSON.stringify(dadosMinhaEmpresa));
+                alert("Dados Sincronizados! Reiniciando...");
                 location.reload();
             };
             reader.readAsText(event.target.files[0]);
         }
 
-        // COLOQUE AQUI O RESTANTE DO SEU SCRIPT ORIGINAL (mudarAba, enviarWhatsApp, etc)
         function mudarAba(id) {
             document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.aba-btn').forEach(btn => { btn.classList.remove('bg-black','text-white'); btn.classList.add('bg-gray-200','text-gray-700'); });
+            document.getElementById('btn-' + id).classList.add('bg-black','text-white');
+            atualizarDocumentoFinal();
         }
+
+        function adicionarMaterial() { 
+            const n = document.getElementById('matNome').value, p = parseFloat(document.getElementById('matPreco').value), q = parseInt(document.getElementById('matQtd').value), perd = parseFloat(document.getElementById('matPerda').value);
+            if(!n) return; materiais.push({ nome: n, total: (p / q) * (1 + (perd / 100)) }); salvarDadosNoNavegador(); renderizarTudo();
+        }
+
+        function adicionarProdutoBase() {
+            const n = document.getElementById('baseNome').value, p = parseFloat(document.getElementById('basePreco').value), perd = parseFloat(document.getElementById('basePerda').value);
+            if(!n) return; produtosBase.push({ nome: n, total: p * (1 + (perd / 100)) }); salvarDadosNoNavegador(); renderizarTudo();
+        }
+
+        function adicionarEmbalagem() {
+            const n = document.getElementById('embNome').value, p = parseFloat(document.getElementById('embPreco').value), q = parseInt(document.getElementById('embQtd').value), perd = parseFloat(document.getElementById('embPerda').value);
+            if(!n) return; embalagens.push({ nome: n, total: (p / q) * (1 + (perd / 100)) }); salvarDadosNoNavegador(); renderizarTudo();
+        }
+
+        function adicionarMaquina() {
+            const n = document.getElementById('maqNome').value, tin = parseFloat(document.getElementById('maqTinta').value), ene = parseFloat(document.getElementById('maqEnergia').value), man = parseFloat(document.getElementById('maqManutencao').value), perd = parseFloat(document.getElementById('maqPerda').value);
+            if(!n) return; maquinas.push({ nome: n, total: (tin + ene + man) * (1 + (perd / 100)) }); salvarDadosNoNavegador(); renderizarTudo();
+        }
+
+        function renderizarTudo() {
+            let t = (arr, el, id) => {
+                let d = document.getElementById(el); d.innerHTML = '';
+                arr.forEach((m, i) => d.innerHTML += `<tr class="border-b"><td class="p-2 font-medium">${m.nome}</td><td class="p-2 font-bold text-black">R$ ${m.total.toFixed(2)}</td><td class="p-2 text-right"><button onclick="${id}.splice(${i},1);salvarDadosNoNavegador();renderizarTudo();" class="text-red-500">Excluir</button></td></tr>`);
+            };
+            t(materiais, 'tabelaMateriais', 'materiais'); t(produtosBase, 'tabelaProdutosBase', 'produtosBase'); t(embalagens, 'tabelaEmbalagens', 'embalagens'); t(maquinas, 'tabelaMaquinas', 'maquinas');
+            let upd = (s, b) => { let sl = document.getElementById(s); sl.innerHTML = ''; b.forEach((x, i) => sl.innerHTML += `<option value="${i}">${x.nome} (R$ ${x.total.toFixed(2)})</option>`); };
+            upd('selectMat', materiais); upd('selectBase', produtosBase); upd('selectEmb', embalagens); upd('selectMaq', maquinas);
+            renderizarCatalogo();
+        }
+
+        function adicionarComponente(tipo) {
+            let idx = document.getElementById(tipo === 'mat' ? 'selectMat' : (tipo === 'base' ? 'selectBase' : (tipo === 'emb' ? 'selectEmb' : 'selectMaq'))).value;
+            let obj = tipo === 'mat' ? materiais[idx] : (tipo === 'base' ? produtosBase[idx] : (tipo === 'emb' ? embalagens[idx] : maquinas[idx]));
+            let c = 0, d = "";
+            if(tipo === 'mat') { let r = parseFloat(document.getElementById('usoRendimento').value), f = parseFloat(document.getElementById('usoFracao').value); c = (obj.total/r)*f; d = `Rend ${r}/Frac ${f}`; }
+            else { c = obj.total; d = "1 un"; }
+            orcamentoAtual.push({ nome: obj.nome, d, c }); renderizarOrcamento();
+        }
+
+        function renderizarOrcamento() {
+            let t = document.getElementById('tabelaOrcamentoAtual'); t.innerHTML = '';
+            orcamentoAtual.forEach((x, i) => t.innerHTML += `<tr class="border-b"><td class="p-2">${x.nome}</td><td class="p-2 text-gray-400">${x.d}</td><td class="p-2 font-bold">R$ ${x.c.toFixed(2)}</td><td class="p-2"><button onclick="orcamentoAtual.splice(${i},1);renderizarOrcamento();" class="text-red-500">X</button></td></tr>`);
+            calcularTudo();
+        }
+
+        function calcularTudo() {
+            let itens = 0; orcamentoAtual.forEach(x => itens += x.c);
+            let s = parseFloat(document.getElementById('salario').value), h = parseFloat(document.getElementById('horasMes').value), t = parseFloat(document.getElementById('tempoItem').value), m = parseFloat(document.getElementById('margemLucro').value);
+            let mo = t * ((s / h) / 60);
+            let total = (itens + mo) * (1 + (m / 100));
+            document.getElementById('precoFinalAjustavel').value = total.toFixed(2);
+        }
+
+        function jogarProdutoNoPedido() {
+            let n = document.getElementById('nomeProdutoCalculado').value, p = parseFloat(document.getElementById('precoFinalAjustavel').value);
+            let q = parseInt(prompt(`Quantas de "${n}"?`, "1")) || 1;
+            pedidoCliente.push({ descricao: n, quantidade: q, valorUnitario: p, valorTotal: p * q });
+            orcamentoAtual = []; renderizarOrcamento(); mudarAba('aba-gerar-pedido');
+        }
+
+        function processarFichaParaSalvar() {
+            let n = document.getElementById('nomeProdutoCalculado').value, p = parseFloat(document.getElementById('precoFinalAjustavel').value), d = document.getElementById('descProdutoCalculado').value;
+            catalogoProdutos.push({ id: Date.now().toString(), nome: n, precoVenda: p, descricao: d, imagem: "" });
+            salvarDadosNoNavegador(); alert("Salvo no Catálogo!"); renderizarCatalogo();
+        }
+
+        function renderizarCatalogo() {
+            let c = document.getElementById('listaCatalogoProdutos'); c.innerHTML = '';
+            catalogoProdutos.forEach(p => c.innerHTML += `<div class="bg-white p-4 border rounded-xl"><h4 class="font-bold">${p.nome}</h4><p class="text-xs text-gray-500">${p.descricao}</p><p class="text-lg font-black text-green-700">R$ ${p.precoVenda.toFixed(2)}</p><button onclick="adicionarProdutoCatalogoAoPedido('${p.id}')" class="w-full bg-black text-white text-[10px] p-2 mt-2 rounded">Adicionar</button></div>`);
+        }
+
+        function adicionarProdutoCatalogoAoPedido(id) { let p = catalogoProdutos.find(x => x.id === id); if(p) { let q = parseInt(prompt("Qtd?", "1")) || 1; pedidoCliente.push({ descricao: p.nome, quantidade: q, valorUnitario: p.precoVenda, valorTotal: p.precoVenda * q }); mudarAba('aba-gerar-pedido'); } }
+
+        function atualizarDocumentoFinal() {
+            document.getElementById('printEmpresaNome').innerText = dadosMinhaEmpresa.nome;
+            document.getElementById('printEmpresaContato').innerText = dadosMinhaEmpresa.contato;
+            document.getElementById('printClienteNome').innerText = document.getElementById('clienteNome').value || "--";
+            document.getElementById('printClienteContato').innerText = document.getElementById('clienteContato').value || "--";
+            document.getElementById('dataOrcamento').innerText = new Date().toLocaleDateString('pt-BR');
+            let tt = document.getElementById('tabelaItensTelaOrcamento'); tt.innerHTML = '';
+            let tp = document.getElementById('tabelaItensDoPedido'); tp.innerHTML = '';
+            let total = 0;
+            pedidoCliente.forEach((x, i) => {
+                total += x.valorTotal;
+                tt.innerHTML += `<tr class="border-b"><td class="p-2">${x.descricao}</td><td class="p-2 text-center">${x.quantidade}</td><td class="p-2 text-right">R$ ${x.valorTotal.toFixed(2)}</td><td class="p-2 text-center"><button onclick="pedidoCliente.splice(${i},1);atualizarDocumentoFinal();" class="text-red-500">X</button></td></tr>`;
+                tp.innerHTML += `<tr><td class="p-2 border-b">${x.descricao}</td><td class="p-2 text-center border-b">${x.quantidade}</td><td class="p-2 text-right border-b">R$ ${x.valorTotal.toFixed(2)}</td></tr>`;
+            });
+            document.getElementById('printValorTotalPedido').innerText = `R$ ${total.toFixed(2)}`;
+        }
+
+        function salvarConfiguracoesEmpresa() { dadosMinhaEmpresa.nome = document.getElementById('empresaNome').value; dadosMinhaEmpresa.contato = document.getElementById('empresaContato').value; localStorage.setItem('local_dadosMinhaEmpresa', JSON.stringify(dadosMinhaEmpresa)); atualizarDocumentoFinal(); }
+
+        function enviarWhatsApp() {
+            let tel = document.getElementById('clienteContato').value.replace(/\D/g, '');
+            if(!tel) return alert("Número?");
+            let msg = `Olá! Segue seu orçamento:\n\n`;
+            pedidoCliente.forEach(x => msg += `✅ *${x.quantidade}x ${x.descricao}* - R$ ${x.valorTotal.toFixed(2)}\n`);
+            window.open(`https://api.whatsapp.com/send?phone=55${tel}&text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function salvarOrcamentoNoBanco() { let tot = 0; pedidoCliente.forEach(x => tot += x.valorTotal); orcamentosSalvos.unshift({ data: new Date().toLocaleDateString('pt-BR'), clienteNome: document.getElementById('clienteNome').value, total: tot }); salvarDadosNoNavegador(); mudarAba('aba-historico'); renderizarHistorico(); }
+        function renderizarHistorico() { let t = document.getElementById('listaHistoricoOrcamentos'); t.innerHTML = ''; orcamentosSalvos.forEach(o => t.innerHTML += `<tr class="border-b"><td class="p-3">${o.data}</td><td class="p-3 font-bold">${o.clienteNome}</td><td class="p-3 text-right font-black">R$ ${o.total.toFixed(2)}</td><td class="p-3 text-center"><button class="text-blue-500">Ver</button></td></tr>`); }
+
+        document.getElementById('clienteNome').addEventListener('input', atualizarDocumentoFinal);
+        document.getElementById('clienteContato').addEventListener('input', atualizarDocumentoFinal);
     </script>
 </body>
 </html>
